@@ -342,19 +342,28 @@ resource "aws_cloudfront_monitoring_subscription" "this" {
 }
 
 data "aws_cloudfront_cache_policy" "this" {
-  for_each = toset([for v in concat([var.default_cache_behavior], var.ordered_cache_behavior) : v.cache_policy_name if can(v.cache_policy_name)])
-
+  for_each = toset([
+    for v in concat([var.default_cache_behavior], var.ordered_cache_behavior != null ? var.ordered_cache_behavior : []) :
+    v.cache_policy_name
+    if can(v.cache_policy_name) && v.cache_policy_name != null && v.cache_policy_name != ""
+  ])
   name = each.key
 }
 
 data "aws_cloudfront_origin_request_policy" "this" {
-  for_each = toset([for v in concat([var.default_cache_behavior], var.ordered_cache_behavior) : v.origin_request_policy_name if can(v.origin_request_policy_name)])
-
+  for_each = toset([
+    for v in concat([var.default_cache_behavior], var.ordered_cache_behavior != null ? var.ordered_cache_behavior : []) :
+    v.origin_request_policy_name
+    if can(v.origin_request_policy_name) && v.origin_request_policy_name != null && v.origin_request_policy_name != ""
+  ])
   name = each.key
 }
 
 data "aws_cloudfront_response_headers_policy" "this" {
-  for_each = toset([for v in concat([var.default_cache_behavior], var.ordered_cache_behavior) : v.response_headers_policy_name if can(v.response_headers_policy_name)])
-
+  for_each = toset([
+    for v in concat([var.default_cache_behavior], var.ordered_cache_behavior != null ? var.ordered_cache_behavior : []) :
+    v.response_headers_policy_name
+    if can(v.response_headers_policy_name) && v.response_headers_policy_name != null && v.response_headers_policy_name != ""
+  ])
   name = each.key
 }
